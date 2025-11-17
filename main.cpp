@@ -1,9 +1,13 @@
 #include <iostream>
-
+#include "mutex_example.h"
 using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    increment_raw_example<int>();
+    increment_mutex_example<int>();
+
+
+
     return 0;
 }

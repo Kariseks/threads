@@ -8,10 +8,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 # Główny target aplikacji
-add_executable(threads main.cpp)
+add_executable(threads main.cpp
+    mutex_example.h)
 
 # Target testowy dla Catch2
-add_executable(tests test.cpp)
+add_executable(tests test.cpp
+    mutex_example.cpp)
 
 # Znajdź i dołącz Catch2 (zakładam, że zainstalowane w systemie)
 find_package(Catch2 REQUIRED)
