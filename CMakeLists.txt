@@ -9,7 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Główny target aplikacji
 add_executable(threads main.cpp
-    mutex_example.cpp)
+    mutex_example.cpp
+    quicksort.h)
 
 # Target testowy dla Catch2
 add_executable(tests test.cpp
