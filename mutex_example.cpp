@@ -54,7 +54,7 @@ void switching_threads()
             for(auto iter = v1.begin(); iter != v1.end(); ++iter)
             {
                 sum += *iter;
-                this_thread::yield();   //i want the first to end this etap slower
+                this_thread::yield();   //i want the first to end this stage slower
             }
             celebration.lock();
                 cout << "First thread ended counting the sum, it is:= "<< sum << endl;
@@ -64,7 +64,7 @@ void switching_threads()
     jthread second{ [&barrier, &v2,&celebration]() ->void
         {
             quickSort(0, v2.size()-1, v2.data());
-            this_thread::sleep_for(chrono::milliseconds(250));  //i want this thread to end this etap slower
+            this_thread::sleep_for(chrono::milliseconds(250));  //i want this thread to end this stage slower
             celebration.lock(); //first thread dosen't use RAII
             cout << "Second thread ended sorting" << endl;
             celebration.unlock();

@@ -5,12 +5,15 @@ project(threads LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
+#lambda examples
+add_subdirectory(libs/lambda)
 
 # Główny target aplikacji
 add_executable(threads main.cpp
     mutex_example.cpp
     quicksort.h)
+
+target_link_libraries(threads lambda)
 
 # Target testowy dla Catch2
 add_executable(tests test.cpp
