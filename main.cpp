@@ -7,6 +7,7 @@ int main()
     increment_mutex_example<int>();
 
     thread_info();
+    switching_threads();
 
     return 0;
 }
