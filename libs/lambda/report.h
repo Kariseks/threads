@@ -7,9 +7,10 @@ class Report
 public:
     Report();
 
-    void report_bigger(std::vector<int> vec);
-    void report_smaller(std::vector<int> vec);
-    void report(std::vector<int> vec);
+    void report_bigger(std::vector<int> & vec);
+    void report_smaller(std::vector<int> & vec);
+    void report(std::vector<int> & vec);
+    void live_reporter(std::vector<int> & vec);
 public:
     int pub_var = 0;
     int threshold = 22;

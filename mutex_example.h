@@ -8,6 +8,7 @@
 //=====================================================================================================================
 void thread_info();
 void switching_threads();
+std::vector<int> make_int_vector(int min_val, int max_val, std::size_t count);
 //=====================================================================================================================
 template<typename T>
 void mergeSort(std::vector<T> vec)
