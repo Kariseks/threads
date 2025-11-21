@@ -1,9 +1,10 @@
 set(sources
-    lambda.cpp
+
 )
 
 add_library(lambda STATIC ${sources}
-    report.h report.cpp)
+    report.h report.cpp
+    lambda.h lambda.cpp)
 
 target_include_directories(lambda
     PUBLIC
