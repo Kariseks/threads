@@ -1,6 +1,6 @@
 #include "mutex_example.h"
 #include "report.h"
-
+#include "threads.h"
 using namespace std;
 
 int main()
@@ -14,7 +14,10 @@ int main()
     Report reporter;
 
     auto vec = make_int_vector(-100,100, 10'000'000);
-    reporter.live_reporter(vec);
+    //reporter.live_reporter(vec);
+
+
+    interrupting_example();
 
     return 0;
 }

@@ -11,7 +11,12 @@ add_subdirectory(libs/lambda)
 # Główny target aplikacji
 add_executable(threads main.cpp
     mutex_example.cpp
-    quicksort.h)
+    quicksort.h
+    threads.h threads.cpp)
+
+# taget for Udemy course challanges
+add_subdirectory(udemy)
+
 
 target_link_libraries(threads lambda)
 
