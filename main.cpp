@@ -15,9 +15,7 @@ int main()
 
     auto vec = make_int_vector(-100,100, 10'000'000);
     //reporter.live_reporter(vec);
-
-
-    interrupting_example();
-
+    //interrupting_example();
+    mutex_timed_example();
     return 0;
 }

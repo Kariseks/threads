@@ -2,9 +2,12 @@
 #include "quicksort.h"
 #include <barrier>
 #include <mutex>
+#include <queue>
 #include <random>
+
 //=====================================================================================================================
 using namespace std;
+using namespace chrono_literals;
 //=====================================================================================================================
 void thread_info()
 {
@@ -88,20 +91,80 @@ void switching_threads()
 
 }
 //=====================================================================================================================
-void producer(std::timed_mutex & mtx)
+auto max_wait_time = 15ms;
+int8_t * buffer = nullptr;
+int rand_10_20() {
+    static std::mt19937 gen(std::random_device{}()); // raz inicjalizowany
+    static std::uniform_int_distribution dist(10, 20); // CTAD: int się sam wywnioskuje
+    return dist(gen);
+}
+void producer(std::timed_mutex & mtx, mutex & mtx_speaker,  atomic<bool> & is_done, unsigned long & counter)
 {
+    while( ! is_done.load())
+    {
 
+        std::this_thread::sleep_for(20ms);  //simulate preparing frame for GPU
+        //load frame
+        if(unique_lock<timed_mutex> lock(mtx, std::defer_lock);
+            lock.try_lock_for(max_wait_time))
+        {
+            //put prepared frame in buffer for GPU.
+            if( ! buffer)   //GPU didn't read the previous frame, log the drop
+                delete[] buffer;
+
+            buffer = new int8_t[60];
+            this_thread::sleep_for(2ms);    //simulate work
+            ++counter;
+
+        }
+        else    //new frame arrived->drop this frame, log the dropping
+        {
+            this_thread::sleep_for(1ms);    //simulate logging the drop
+            unique_lock lock_speaker{mtx_speaker};
+            cout << "Frame := " << ++counter << ", dropped"  << endl;
+        }
+    }
 
 }
 //---------------------------------------------------------------------------------------------------------------------
-void consumer(std::timed_mutex & mtx)
+void consumer(std::timed_mutex & mtx, mutex & mtx_speaker, atomic<bool> & is_done, unsigned long & counter)
 {
+    while( ! is_done.load())
+    {
+        //cosumer have to wait till new frame is ready, would be better with variable_condition
 
+        if( ! buffer)   //frame not ready
+        {
+            unique_lock lock_speaker{mtx_speaker};
+            cout << "Consumer is waiting for a frame" << endl;
+        }
+
+        auto working_time = chrono::milliseconds(rand_10_20());
+        {//sending frame to gpu
+            unique_lock<timed_mutex> lock{mtx};
+            this_thread::sleep_for(working_time);    //simulate transfering the frame to gpu;
+            cout << "Frame:= " << ++counter << ", sended to GPU"  << endl;
+        }
+    }
 }
 //---------------------------------------------------------------------------------------------------------------------
-void mutex_timed()
+void mutex_timed_example()
 {
+    cout << "Example with timed mutex" << endl;
+    timed_mutex mtx_timed{};
+    mutex mtx_speaker{};
+    atomic<bool> is_done{false};
+    unsigned long counter = 0;
 
+    jthread pr_1{producer, ref(mtx_timed), ref(mtx_speaker), ref(is_done), ref(counter)};    //camera 1
+    jthread pr_2{producer, ref(mtx_timed), ref(mtx_speaker), ref(is_done), ref(counter)};    //camera 2
+    jthread pr_3{producer, ref(mtx_timed), ref(mtx_speaker), ref(is_done), ref(counter)};    //camera 3
+    jthread pr_4{producer, ref(mtx_timed), ref(mtx_speaker), ref(is_done), ref(counter)};    //camera 4
+    jthread con{consumer, ref(mtx_timed), ref(mtx_speaker), ref(is_done), ref(counter)};
+
+    this_thread::sleep_for(10s);
+
+    is_done.store(true);
 }
 
 
