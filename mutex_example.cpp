@@ -1,6 +1,7 @@
 #include "mutex_example.h"
 #include "quicksort.h"
 #include <barrier>
+#include <mutex>
 #include <random>
 //=====================================================================================================================
 using namespace std;
@@ -28,7 +29,7 @@ std::vector<int> make_int_vector(int min_val, int max_val, std::size_t count) {
     }
     return v;
 }
-
+//=====================================================================================================================
 void switching_threads()
 {
     cout << "This example shows how to synchronize etap of multiple threads" << endl;
@@ -86,3 +87,41 @@ void switching_threads()
     second.join();  //both of them should end before end of the program
 
 }
+//=====================================================================================================================
+void producer(std::timed_mutex & mtx)
+{
+
+
+}
+//---------------------------------------------------------------------------------------------------------------------
+void consumer(std::timed_mutex & mtx)
+{
+
+}
+//---------------------------------------------------------------------------------------------------------------------
+void mutex_timed()
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
