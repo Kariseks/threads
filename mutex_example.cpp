@@ -4,6 +4,7 @@
 #include <mutex>
 #include <queue>
 #include <random>
+#include <shared_mutex>
 
 //=====================================================================================================================
 using namespace std;
@@ -91,6 +92,8 @@ void switching_threads()
 
 }
 //=====================================================================================================================
+//======     Time Mutex     =====
+//=====================================================================================================================
 auto max_wait_time = 15ms;
 int8_t * buffer = nullptr;
 int rand_10_20() {
@@ -148,7 +151,7 @@ void consumer(std::timed_mutex & mtx, mutex & mtx_speaker, atomic<bool> & is_don
     }
 }
 //---------------------------------------------------------------------------------------------------------------------
-void mutex_timed_example()
+void mutex_time_example()
 {
     cout << "Example with timed mutex" << endl;
     timed_mutex mtx_timed{};
@@ -166,8 +169,59 @@ void mutex_timed_example()
 
     is_done.store(true);
 }
+//=====================================================================================================================
+//=====     shared mutex example     =====
+//=====================================================================================================================
+struct Order{
+    string name;
+    int number;
+};
+//---------------------------------------------------------------------------------------------------------------------
+void addOrder(const Order && order, vector<Order> & orders, shared_mutex & mtx)
+{
+    lock_guard lock{mtx};
+    cout << "Update orders" << endl;
+    this_thread::sleep_for(200ms);
+    orders.push_back(order);
+    cout << "Orders updated" << endl;
+}
+//---------------------------------------------------------------------------------------------------------------------
+void printOrders(const string & name, vector<Order> & orders, shared_mutex & mtx)
+{
 
 
+    shared_lock lock{mtx};
+    for(const auto & elem : orders)
+    {
+        this_thread::sleep_for(100ms);
+        if(elem.name == name)
+        {
+            cout << '\t' << name << " ordered:= " << elem.number << endl;
+            return;
+        }
+    }
+
+}
+//---------------------------------------------------------------------------------------------------------------------
+void mutex_shared_example()
+{
+    shared_mutex mtx;
+    vector<Order> orders;
+    orders.push_back(Order{"Karol", 1});
+    orders.push_back(Order{"Mariusz", 2});
+    orders.push_back(Order{"Janina", 3});
+    orders.push_back(Order{"Ola", 4});
+    orders.push_back(Order{"Klaudia", 5});
+
+    jthread r1{printOrders, "Karol", ref(orders), ref(mtx)};
+    jthread r2{printOrders, "Ola", ref(orders), ref(mtx)};
+    jthread r3{printOrders, "Klaudia", ref(orders), ref(mtx)};
+    jthread r4{printOrders, "Janina", ref(orders), ref(mtx)};
+    jthread r5{printOrders, "Karol", ref(orders), ref(mtx)};
+    jthread writer1{addOrder, Order{"Janusz",25}, ref(orders), ref(mtx)};
+
+}
+//---------------------------------------------------------------------------------------------------------------------
 
 
 

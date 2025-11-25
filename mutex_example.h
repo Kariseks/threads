@@ -6,7 +6,8 @@
 #include<vector>
 //=====================================================================================================================
 //=====================================================================================================================
-void mutex_timed_example();
+void mutex_shared_example();
+void mutex_time_example();
 void thread_info();
 void switching_threads();
 std::vector<int> make_int_vector(int min_val, int max_val, std::size_t count);
@@ -75,5 +76,6 @@ void increment_mutex_example()
     std::cout << "This function with mutex should increment the variable " << (n<<1) << " times, var increded " << obj << " times." << std::endl;
 
 }
+//=====================================================================================================================
 //=====================================================================================================================
 #endif // MUTEX_EXAMPLE_H

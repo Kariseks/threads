@@ -10,7 +10,7 @@ add_subdirectory(libs/lambda)
 
 # Główny target aplikacji
 add_executable(threads main.cpp
-    mutex_example.cpp
+    mutex_example.h mutex_example.cpp
     quicksort.h
     threads.h threads.cpp)
 
