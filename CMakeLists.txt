@@ -12,7 +12,8 @@ add_subdirectory(libs/lambda)
 add_executable(threads main.cpp
     mutex_example.h mutex_example.cpp
     quicksort.h
-    threads.h threads.cpp)
+    threads.h threads.cpp
+    threadsafesingleton.h threadsafesingleton.cpp)
 
 # taget for Udemy course challanges
 add_subdirectory(udemy)
