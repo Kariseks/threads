@@ -17,6 +17,7 @@ int main()
     //reporter.live_reporter(vec);
     //interrupting_example();
     //mutex_time_example();
-    mutex_shared_example();
+    //mutex_shared_example();
+    recursive_mutex_example();
     return 0;
 }

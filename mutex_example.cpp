@@ -222,9 +222,74 @@ void mutex_shared_example()
 
 }
 //---------------------------------------------------------------------------------------------------------------------
+//=====================================================================================================================
+//=====     recursive mutex example     =====
+//=====================================================================================================================
+class Counter
+{
+    static constexpr int threshold = 30;
+    static constexpr int reset_value = 0;
+    static constexpr auto recorvery_period = 10ms;
+public:
+    Counter(int counter = 0) : counter{counter} {};
+public:
+    void increment(int how_much);
+    void reset_if_to_big();
+private:
+    void single_inc();
+private:
+    int counter;
+    recursive_mutex mtx;
+
+};
+
+void Counter::increment(int how_much)
+{
+    lock_guard lock{mtx};
+    for(; how_much > 0; --how_much)
+    {
+        single_inc();
+        reset_if_to_big();
+        cout << "Incremented to " << counter << ", in thread:= " << this_thread::get_id() << endl;
+    }
+}
+//---------------------------------------------------------------------------------------------------------------------
+void Counter::reset_if_to_big()
+{
+    if(lock_guard lock{mtx}; counter > threshold)
+        counter = reset_value;
+}
+//---------------------------------------------------------------------------------------------------------------------
+void Counter::single_inc()
+{
+    lock_guard lock{mtx};
+    ++counter;
+    this_thread::sleep_for(recorvery_period);
+
+}
+//---------------------------------------------------------------------------------------------------------------------
+void recursive_mutex_example()
+{
+    Counter counter;
+    cout << string('-', 60)
+         << "Recursive Mutex example"
+         << string('-', 60)
+         << endl;
+
+    jthread t1{[&counter]()
+    {
+        counter.increment(20);
+        counter.increment(11);
+    }};
+    jthread t2{[&counter]()
+               {
+                   counter.increment(18);
+                   counter.increment(21);
+               }};
 
 
-
+}
+//---------------------------------------------------------------------------------------------------------------------
 
 
 
