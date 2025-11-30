@@ -25,7 +25,7 @@ void dead_lock(CriticalData & data_1, CriticalData & data_2)
     cout << "Thread: " << this_thread::get_id() << ", has acquired resource: " << data_2.name << endl;
 
 }
-void simpleColock(stop_token stoken)
+void simpleClock(stop_token stoken)
 {
     while(! stoken.stop_requested())
     {
@@ -44,9 +44,40 @@ void dead_lock_example()
     CriticalData  data_2{"data 2"};
 
     cout << "dead lock example with 2 mutex" << endl;
-    jthread clock(simpleColock);
+    jthread clock(simpleClock);
     jthread t1(dead_lock, std::ref(data_1), std::ref(data_2));
     jthread t2(dead_lock, std::ref(data_2), std::ref(data_1));
     this_thread::sleep_for(15s);
     clock.request_stop();
+}
+//=====================================================================================================================
+void solution_lock(CriticalData & data_1, CriticalData & data_2)
+{
+
+    std::lock(data_1.mtx, data_2.mtx);
+
+    cout << "Thread: " << this_thread::get_id() << ", has acquired resource: " << data_1.name << endl;
+    cout << "Thread: " << this_thread::get_id() << ", has acquired resource: " << data_2.name << endl;
+    this_thread::sleep_for(5s);
+
+    data_1.mtx.unlock();
+    data_2.mtx.unlock();
+    cout << "Thread: " << this_thread::get_id() << ", has released: " << data_1.name << endl;
+    cout << "Thread: " << this_thread::get_id() << ", has released: " << data_2.name << endl;
+
+}
+//---------------------------------------------------------------------------------------------------------------------
+void dead_lock_solution_lock()
+{
+    CriticalData  data_1{"data 1"};
+    CriticalData  data_2{"data 2"};
+
+    cout << "dead lock solution, example with 2 mutex" << endl;
+    jthread t1(solution_lock, std::ref(data_1), std::ref(data_2));
+    jthread t2(solution_lock, std::ref(data_2), std::ref(data_1));
+
+    jthread clock(simpleClock);
+    this_thread::sleep_for(15s);
+    clock.request_stop();
+
 }
