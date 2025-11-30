@@ -22,6 +22,7 @@ int main()
     //recursive_mutex_example();
     //dead_lock_example();
     //dead_lock_solution_lock();
-    dead_lock_solution_scoped_lock();
+    //dead_lock_solution_scoped_lock();
+    non_lock_example();
     return 0;
 }

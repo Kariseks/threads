@@ -113,3 +113,48 @@ void dead_lock_solution_scoped_lock()
     this_thread::sleep_for(15s);
     //clock.request_stop();
 }
+//=====================================================================================================================
+int counter()
+{
+    thread_local int cnt = 0;
+    return     ++cnt;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void non_lock_example()
+{
+    mutex coutMutex;
+
+    auto worker = [&coutMutex](stop_token stoken)
+        {
+            unique_lock lock{coutMutex, defer_lock};
+            while( ! stoken.stop_requested())
+            {
+                lock.lock();
+                cout << "Thread: " << this_thread::get_id() << "\t" << counter() << endl;
+                lock.unlock();
+                this_thread::sleep_for(1s);
+            }
+        };
+
+    jthread t1(worker);
+    this_thread::sleep_for(190ms);
+    jthread t2(worker);
+    this_thread::sleep_for(205ms);
+    jthread t3(worker);
+
+    t1.join();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

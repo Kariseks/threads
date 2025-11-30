@@ -7,6 +7,8 @@
 void dead_lock_example();
 void dead_lock_solution_lock();
 void dead_lock_solution_scoped_lock();
+void non_lock_example();
+
 //=====================================================================================================================
 
 #endif // LOCK_EXAMPLES_H
