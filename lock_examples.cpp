@@ -81,3 +81,35 @@ void dead_lock_solution_lock()
     clock.request_stop();
 
 }
+//=====================================================================================================================
+void solution_scoped_lock(CriticalData & data_1, CriticalData & data_2)
+{
+
+
+    cout << "Thread: " << this_thread::get_id() << ", will try to lock: " << data_1.name << endl;
+    cout << "Thread: " << this_thread::get_id() << ", will try to lock: " << data_2.name << endl;
+    this_thread::sleep_for(5s);
+
+    scoped_lock lock{data_1.mtx, data_2.mtx};
+    cout << "Thread: " << this_thread::get_id() << ", acquired: " << data_1.name << endl;
+    cout << "Thread: " << this_thread::get_id() << ", acquired: " << data_2.name << endl;
+
+    this_thread::sleep_for(5s);
+
+    cout << "Thread: " << this_thread::get_id() << ", has released: " << data_1.name << endl;
+    cout << "Thread: " << this_thread::get_id() << ", has released: " << data_2.name << endl;
+}
+//---------------------------------------------------------------------------------------------------------------------
+void dead_lock_solution_scoped_lock()
+{
+    CriticalData  data_1{"data 1"};
+    CriticalData  data_2{"data 2"};
+
+    cout << "dead lock solution, example with 2 mutex" << endl;
+    jthread t1(solution_scoped_lock, std::ref(data_1), std::ref(data_2));
+    jthread t2(solution_scoped_lock, std::ref(data_2), std::ref(data_1));
+
+    //jthread clock(simpleClock);
+    this_thread::sleep_for(15s);
+    //clock.request_stop();
+}
