@@ -1,3 +1,4 @@
+#include "lock_examples.h"
 #include "mutex_example.h"
 #include "report.h"
 #include "threads.h"
@@ -18,6 +19,7 @@ int main()
     //interrupting_example();
     //mutex_time_example();
     //mutex_shared_example();
-    recursive_mutex_example();
+    //recursive_mutex_example();
+    dead_lock_example();
     return 0;
 }

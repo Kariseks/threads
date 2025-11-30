@@ -13,7 +13,8 @@ add_executable(threads main.cpp
     mutex_example.h mutex_example.cpp
     quicksort.h
     threads.h threads.cpp
-    threadsafesingleton.h threadsafesingleton.cpp)
+    threadsafesingleton.h threadsafesingleton.cpp
+    lock_examples.h lock_examples.cpp)
 
 # taget for Udemy course challanges
 add_subdirectory(udemy)

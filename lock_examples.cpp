@@ -1,0 +1,52 @@
+#include "lock_examples.h"
+//=====================================================================================================================
+#include <mutex>
+#include <thread>
+#include <iostream>
+//=====================================================================================================================
+using namespace std;
+//=====================================================================================================================
+struct CriticalData
+{
+    string name;
+    mutex mtx;
+};
+
+//=====================================================================================================================
+//=====================================================================================================================
+void dead_lock(CriticalData & data_1, CriticalData & data_2)
+{
+    lock_guard lock_1{data_1.mtx};
+    cout << "Thread: " << this_thread::get_id() << ", has acquired resource: " << data_1.name << endl;
+
+    this_thread::sleep_for(1s);
+
+    lock_guard lock_2{data_2.mtx};
+    cout << "Thread: " << this_thread::get_id() << ", has acquired resource: " << data_2.name << endl;
+
+}
+void simpleColock(stop_token stoken)
+{
+    while(! stoken.stop_requested())
+    {
+        static auto time_start = chrono::steady_clock::now();
+        auto time_now = chrono::steady_clock::now();
+        auto sec = duration_cast<std::chrono::seconds>(time_now-time_start);
+        cout << "Time since start: " << sec.count() << endl;
+        this_thread::sleep_for(1s);
+    }
+}
+//---------------------------------------------------------------------------------------------------------------------
+
+void dead_lock_example()
+{
+    CriticalData  data_1{"data 1"};
+    CriticalData  data_2{"data 2"};
+
+    cout << "dead lock example with 2 mutex" << endl;
+    jthread clock(simpleColock);
+    jthread t1(dead_lock, std::ref(data_1), std::ref(data_2));
+    jthread t2(dead_lock, std::ref(data_2), std::ref(data_1));
+    this_thread::sleep_for(15s);
+    clock.request_stop();
+}
