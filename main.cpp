@@ -2,6 +2,7 @@
 #include "mutex_example.h"
 #include "report.h"
 #include "threads.h"
+#include "condition_variables.h"
 using namespace std;
 
 int main()
@@ -23,6 +24,8 @@ int main()
     //dead_lock_example();
     //dead_lock_solution_lock();
     //dead_lock_solution_scoped_lock();
-    non_lock_example();
+    //non_lock_example();
+    simple_condition_variable_example();
+
     return 0;
 }

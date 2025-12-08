@@ -14,7 +14,8 @@ add_executable(threads main.cpp
     quicksort.h
     threads.h threads.cpp
     threadsafesingleton.h threadsafesingleton.cpp
-    lock_examples.h lock_examples.cpp)
+    lock_examples.h lock_examples.cpp
+    condition_variables.h condition_variables.cpp)
 
 # taget for Udemy course challanges
 add_subdirectory(udemy)

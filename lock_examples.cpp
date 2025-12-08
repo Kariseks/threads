@@ -127,12 +127,13 @@ void non_lock_example()
 
     auto worker = [&coutMutex](stop_token stoken)
         {
-            unique_lock lock{coutMutex, defer_lock};
+
             while( ! stoken.stop_requested())
             {
-                lock.lock();
-                cout << "Thread: " << this_thread::get_id() << "\t" << counter() << endl;
-                lock.unlock();
+                {
+                    lock_guard lock{coutMutex};
+                    cout << "Thread: " << this_thread::get_id() << "\t" << counter() << endl;
+                }
                 this_thread::sleep_for(1s);
             }
         };
